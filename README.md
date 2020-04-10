@@ -16,5 +16,11 @@ socat -d -d pty,raw,echo=0 "exec:myprog ...,pty,raw,echo=0"
 ``` 
 where the executable myprog will be connected with the VSP through stdio.  
 
+#### Running the code  
+
+Compile:  
+```
+gcc -o elm_main elm_main.c
+```  
 
 
