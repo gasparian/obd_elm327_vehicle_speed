@@ -15,8 +15,8 @@ Here are some basic serial port parameters for elm327 devices:
  - No Parity;  
 
 Sellecting the Serial port Number on Linux:  
- - /dev/ttyUSBx - when using USB to Serial Converter, where x can be 0,1,2...etc;  
- - /dev/ttySx   - for PC hardware based Serial ports, where x can be 0,1,2...etc;  
+ - `/dev/ttyUSBx` - when using USB to Serial Converter, where x can be 0,1,2...etc;  
+ - `/dev/ttySx`   - for PC hardware based Serial ports, where x can be 0,1,2...etc;  
 Remember, that in Linux, everything is a file - so you can apply standart read/write operations on `/dev/tty*`.  
 
 Also, for quick tests, I use `screen`:  
