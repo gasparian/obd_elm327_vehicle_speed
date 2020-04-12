@@ -1,41 +1,29 @@
-## elm327 signals processor on linux  
+## ELM327 signals processor on linux  
 
-Check out the [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df).  
+Before begin:  
+ - [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df);  
+ - [elm reference](https://www.elmelectronics.com/wp-content/uploads/2016/07/ELM327DS.pdf);  
+- `man termios`;  
 
 ### Configuring COM-port on linux  
 
-/*----------------------------------------------------------------------------------------------------*/
-/* Program reads a string from the serial port at 9600 bps 8N1 format                                 */
-/* Baudrate - 9600                                                                                    */
-/* Stop bits -1                                                                                       */
-/* No Parity                                                                                          */
-/*----------------------------------------------------------------------------------------------------*/
+The main thing - is to configure serial port in right way. The communication itself is straight forward.  
+Here are some basic serial port parameters for elm327 devices:  
+ - Baudrate - 38400; 
+ - 8 data bits;  
+ - Stop bits - 1;  
+ - No Parity;  
 
-/*====================================================================================================*/
-/* Running the executable                                                                             */
-/* ---------------------------------------------------------------------------------------------------*/ 
-/* 1) Compile the  serialport_read.c  file using gcc on the terminal (without quotes)                 */
-/*                                                                                                    */
-/*	" gcc -o serialport_read serialport_read.c "                                                      */
-/*                                                                                                    */
-/* 2) Linux will not allow you to access the serial port from user space,you have to be root.So use   */
-/*    "sudo" command to execute the compiled binary as super user.                                    */
-/*                                                                                                    */
-/*       "sudo ./serialport_read"                                                                     */
-/*                                                                                                    */
-/*====================================================================================================*/
+Sellecting the Serial port Number on Linux:  
+ - /dev/ttyUSBx - when using USB to Serial Converter, where x can be 0,1,2...etc;  
+ - /dev/ttySx   - for PC hardware based Serial ports, where x can be 0,1,2...etc;  
+Remember, that in Linux, everything is a file - so you can apply standart read/write operations on `/dev/tty*`.  
 
-/*====================================================================================================*/
-/* Sellecting the Serial port Number on Linux                                                         */
-/* ---------------------------------------------------------------------------------------------------*/ 
-/* /dev/ttyUSBx - when using USB to Serial Converter, where x can be 0,1,2...etc                      */
-/* /dev/ttySx   - for PC hardware based Serial ports, where x can be 0,1,2...etc                      */
-/*====================================================================================================*/
-
-/*-------------------------------------------------------------*/
-/* termios structure -  /usr/include/asm-generic/termbits.h    */ 
-/* use "man termios" to get more info about  termios structure */
-/*-------------------------------------------------------------*/    
+Also, for quick tests, I use `screen`:  
+```
+sudo screen -L /dev/ttyUSB0 38400,cs8
+```  
+After finishing the screen session, the serial port "saves" the right configuration.  
 
 ### Running the code  
 
@@ -43,9 +31,9 @@ Compile:
 ```
 gcc -o elm_main elm_main.c
 ```  
-Run, passing the needed device:  
+Run, passing the needed device name (you need to be root or superuser):  
 ```
-./elm_main /dev/ttyUSB0
+sudo ./elm_main /dev/ttyUSB0
 ```  
 
 

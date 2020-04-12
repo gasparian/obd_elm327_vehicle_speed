@@ -1,22 +1,25 @@
 #ifndef OBD_HELPERS_H
 #define OBD_HELPERS_H
 
-#define PID_SPEED "01 0D\r"
+#define SET_LINE_BRK "AT L1\r"
 #define DEVICE_INFO "atz\r"
+#define PID_SPEED "01 0D\r"
 
-#include <unistd.h>  /* UNIX Standard Definitions 	   */ 
-#include <fcntl.h>   /* File Control Definitions           */
+#include <fcntl.h>   // File control definitions
+#include <time.h>
 #include <stdio.h>
+#include <unistd.h>  // UNIX standard definitions 
 #include <string.h>
 #include <stdlib.h>
-#include <termios.h> /* POSIX Terminal Control Definitions */
+#include <termios.h> // POSIX Terminal control definitions
+#include <inttypes.h>
 
 void get_port(int *fd, char **device) {
-	/*------------------------------- Opening the Serial Port -------------------------------*/
+	/*------------------------------- Opening the Serial Port ---------------------------------*/
 
-	*fd = open(*device, O_RDWR | O_NOCTTY);	/* O_RDWR   - Read/Write access to serial port       */
-										    /* O_NOCTTY - No terminal will control the process   */
-											/* Open in blocking mode, read will wait             */
+	*fd = open(*device, O_RDWR | O_NOCTTY);	/* O_RDWR   - Read/Write access to serial port     */
+										    /* O_NOCTTY - No terminal will control the process */
+											/* Open in blocking mode, read will wait           */
 	if(*fd < 0) {	 
 		printf("\n  Error! Cannot open %s \n", *device);
 		exit(1);
@@ -25,55 +28,90 @@ void get_port(int *fd, char **device) {
 }
 
 void serial_setup(int *fd, size_t vmin, size_t vtime) {
-	/*---------- Setting the Attributes of the serial port using termios structure --------- */
+	/*---------- Setting the Attributes of the serial port using termios structure ------------*/
 	
-	struct termios SerialPortSettings;	/* Create the structure                          */
+	struct termios SerialPortSettings;	// Create the structure
 
-	tcgetattr(*fd, &SerialPortSettings);	/* Get the current attributes of the Serial port */
+	tcgetattr(*fd, &SerialPortSettings); // Get the current attributes of the Serial port
     
-    SerialPortSettings.c_cflag = B38400 | CS8 | CLOCAL | CREAD | IGNPAR;
-    /* B38400 - standart elm327 baud rate                             */
-    /* CREAD | CLOCAL - Enable receiver, Ignore Modem Control lines   */
-    /* CS8 - Set the data bits = 8                                    */
+    // Setting the Baud rate for reading and writing
+	cfsetispeed(&SerialPortSettings, B38400);
+	cfsetospeed(&SerialPortSettings, B38400);
 
-    // More detailed serial port configuration; may be helpful later
-    // /* Setting the Baud rate for reading and writing */
-	// cfsetispeed(&SerialPortSettings, B38400);
-	// cfsetospeed(&SerialPortSettings, B38400);
-	// /* 8N1 Mode */
-	// SerialPortSettings.c_cflag &= ~PARENB;   /* Disables the Parity Enable bit(PARENB),So No Parity    */
-	// SerialPortSettings.c_cflag &= ~CSTOPB;   /* CSTOPB = 2 Stop bits, here it is cleared so 1 Stop bit */
-	// SerialPortSettings.c_cflag &= ~CSIZE;    /* Clears the mask for setting the data size              */
-	// SerialPortSettings.c_cflag |=  CS8;      /* Set the data bits = 8                                  */
-	// // SerialPortSettings.c_cflag &= ~CRTSCTS;       /* No Hardware flow Control                       */
-	// SerialPortSettings.c_cflag |=  
-	// SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          /* Disable XON/XOFF flow control both i/p and o/p */
-	// SerialPortSettings.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);  /* Non Cannonical mode                            */
-	// SerialPortSettings.c_oflag &= ~OPOST; /*No Output Processing*/
+	SerialPortSettings.c_cflag &= ~PARENB;     // Disables the Parity Enable bit(PARENB), So No Parity
+	SerialPortSettings.c_cflag &= ~CSTOPB;     // CSTOPB = 2 Stop bits, here it is cleared so 1 Stop bit
+	SerialPortSettings.c_cflag &= ~CSIZE;      // Clears the mask for setting the data size
+	SerialPortSettings.c_cflag |=  CS8;        // Set the data bits = 8
+	SerialPortSettings.c_cflag &= ~CRTSCTS; // No Hardware flow Control
+	SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p
+	SerialPortSettings.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Non Cannonical mode
+	SerialPortSettings.c_oflag &= ~OPOST;                           // No Output Processing
 
     // Setting blocking params
-	SerialPortSettings.c_cc[VMIN] = vmin; // character count 0-255
+	SerialPortSettings.c_cc[VMIN] = vmin;   // character count 0-255
 	SerialPortSettings.c_cc[VTIME] = vtime; // in deciseconds (0.1 sec.); if == 0 - Wait indefinetly
 
-	if((tcsetattr(*fd, TCSANOW, &SerialPortSettings)) != 0) { // Set the attributes to the termios structure
+    // Set the attributes to the termios structure
+	if((tcsetattr(*fd, TCSANOW, &SerialPortSettings)) != 0) { 
 		printf("\n  ERROR ! in Setting attributes");
 		exit(1);
 	} else {
-		printf("\n  Parameters set:\n    BaudRate = 38400 \n    StopBits = 1 \n    Parity   = none\n");
+		printf("\n  Parameters set:\n    BaudRate = 38400 \n    StopBits = 1 \n    Parity = none \n    VMIN = %zu \n    VTIME = %zu \n", vmin, vtime);
 	}
 }
 
-void elm_talk(int *fd, char* buff, size_t buff_size) {
-    /*---------- Send command to the device and wait for the answer --------- */
+size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command) {
+    /*---------- Send command to the device and wait for the answer ---------*/
     size_t bytes_read = 0;
-    tcflush(*fd, TCIFLUSH); // Discards old data in the rx buffer
 
-    // send control word to elm327
-    write(*fd, DEVICE_INFO, sizeof(DEVICE_INFO)); // getr device name for debugging 
-    // write(fd, PID_SPEED, sizeof(PID_SPEED)); // use to get vehicle speed
+    // Discards old data in the rx buffer
+    tcflush(*fd, TCIFLUSH); 
 
-    // get answer from file
+    // send control command to elm327
+    write(*fd, command, sizeof(command));
+
+    // get answer and write to buff
     bytes_read = read(*fd, buff, buff_size);
+    
+    return bytes_read;
+}
+
+unsigned long get_time() {
+    /*----------------- Returns current time in microseconds -----------------*/
+    unsigned long us;
+    time_t s;
+    struct timespec spec;
+
+    clock_gettime(CLOCK_REALTIME, &spec);
+    s = spec.tv_sec;
+    us = (unsigned long)(spec.tv_nsec / 1000.0);
+    if (us > 999999) {
+        s++;
+        us = 0;
+    }
+    us += s*1000000UL;
+    return us;
+}
+
+void slice_str(const char *str, char *buffer, size_t start, size_t end) {
+    /*--------------- Writes a slice of the input string ---------------*/
+    size_t j = 0;
+    for ( size_t i = start; i <= end; ++i ) {
+        buffer[j++] = str[i];
+    }
+}
+
+int get_vehicle_speed(char *answer, size_t char_size) {
+    /*---------- Converts last bytes of answer hex-->dec; speed range: 0...255 km\h  --------- */
+    char hexstring[2];
+    if ( char_size <= 1 ) {
+        return INT32_MIN;
+    }
+    size_t start = char_size - 2;
+    start = start >= 0 ? start : 0;
+    slice_str(answer, hexstring, start, char_size-1);
+    int speed = (int)strtol(hexstring, NULL, 16);
+    return speed;
 }
 
 #endif
