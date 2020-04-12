@@ -7,6 +7,7 @@
 #include <unistd.h>  /* UNIX Standard Definitions 	   */ 
 #include <fcntl.h>   /* File Control Definitions           */
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <termios.h> /* POSIX Terminal Control Definitions */
 
@@ -62,19 +63,17 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
 	}
 }
 
-int elm_talk(int *fd, char (*read_buffer)[32]) {
+void elm_talk(int *fd, char* buff, size_t buff_size) {
     /*---------- Send command to the device and wait for the answer --------- */
-    int  bytes_read = 0;
+    size_t bytes_read = 0;
     tcflush(*fd, TCIFLUSH); // Discards old data in the rx buffer
 
     // send control word to elm327
     write(*fd, DEVICE_INFO, sizeof(DEVICE_INFO)); // getr device name for debugging 
-    // write(fd, PID_SPEED, sizeof(PID_SPEED)); // use in real life ;)
+    // write(fd, PID_SPEED, sizeof(PID_SPEED)); // use to get vehicle speed
 
-    // read answer from buffer file
-    bytes_read = read(*fd, read_buffer, sizeof(*read_buffer)); 
-
-    return bytes_read;
+    // get answer from file
+    bytes_read = read(*fd, buff, buff_size);
 }
 
 #endif
