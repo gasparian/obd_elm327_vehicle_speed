@@ -23,7 +23,7 @@ Also, for quick tests, I use `screen`:
 ```
 sudo screen -L /dev/ttyUSB0 38400,cs8
 ```  
-After finishing the screen session, the serial port "saves" the right configuration.  
+After finishing the screen session, the serial port "saves" the right configuration, so it becomes really useful for debugging, since the port configuration is the main thing, as I mentioned before.  
 
 ### Running the code  
 
