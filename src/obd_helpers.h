@@ -15,47 +15,47 @@
 #include <inttypes.h>
 
 void get_port(int *fd, char **device) {
-	/*------------------------------- Opening the Serial Port ---------------------------------*/
+    /*------------------------------- Opening the Serial Port ---------------------------------*/
 
-	*fd = open(*device, O_RDWR | O_NOCTTY);	/* O_RDWR   - Read/Write access to serial port     */
-										    /* O_NOCTTY - No terminal will control the process */
-											/* Open in blocking mode, read will wait           */
-	if(*fd < 0) {	 
-		printf("\n  Error! Cannot open %s \n", *device);
-		exit(1);
-	} 
-	printf("\n %s Opened Successfully! \n", *device);
+    *fd = open(*device, O_RDWR | O_NOCTTY);    /* O_RDWR   - Read/Write access to serial port     */
+                                            /* O_NOCTTY - No terminal will control the process */
+                                            /* Open in blocking mode, read will wait           */
+    if(*fd < 0) {     
+        printf("\n  Error! Cannot open %s \n", *device);
+        exit(1);
+    } 
+    printf("\n %s Opened Successfully! \n", *device);
 }
 
 void serial_setup(int *fd, size_t vmin, size_t vtime) {
-	/*---------- Setting the Attributes of the serial port using termios structure ------------*/
-	
-	struct termios SerialPortSettings;	// Create the structure
+    /*---------- Setting the Attributes of the serial port using termios structure ------------*/
+    
+    struct termios SerialPortSettings;    // Create the structure
 
-	tcgetattr(*fd, &SerialPortSettings); // Get the current attributes of the Serial port
+    tcgetattr(*fd, &SerialPortSettings); // Get the current attributes of the Serial port
 
-	// control options
+    // control options
     // Setting the Baud rate for reading and writing
-	cfsetispeed(&SerialPortSettings, B38400);
-	cfsetospeed(&SerialPortSettings, B38400);
+    cfsetispeed(&SerialPortSettings, B38400);
+    cfsetospeed(&SerialPortSettings, B38400);
 
     // 8N1 - no parity mode
     SerialPortSettings.c_cflag &= ~PARENB;     // Disables the Parity Enable bit(PARENB), So No Parity
-	SerialPortSettings.c_cflag &= ~CSTOPB;     // CSTOPB = 2 Stop bits, here it is cleared so 1 Stop bit
-	SerialPortSettings.c_cflag &= ~CSIZE;      // Clears the mask for setting the data size
-	SerialPortSettings.c_cflag |=  CS8;        // Set the data bits = 8
+    SerialPortSettings.c_cflag &= ~CSTOPB;     // CSTOPB = 2 Stop bits, here it is cleared so 1 Stop bit
+    SerialPortSettings.c_cflag &= ~CSIZE;      // Clears the mask for setting the data size
+    SerialPortSettings.c_cflag |=  CS8;        // Set the data bits = 8
     //
-	SerialPortSettings.c_cflag &= ~CRTSCTS; // No Hardware flow Control
+    SerialPortSettings.c_cflag &= ~CRTSCTS; // No Hardware flow Control
     SerialPortSettings.c_cflag |= CREAD;
     SerialPortSettings.c_cflag |= CLOCAL;
     SerialPortSettings.c_cflag &= ~HUPCL;
     // Setting blocking params
-	SerialPortSettings.c_cc[VMIN] = vmin;   // character count 0-255
-	SerialPortSettings.c_cc[VTIME] = vtime; // in deciseconds (0.1 sec.); if == 0 - Wait indefinetly
+    SerialPortSettings.c_cc[VMIN] = vmin;   // character count 0-255
+    SerialPortSettings.c_cc[VTIME] = vtime; // in deciseconds (0.1 sec.); if == 0 - Wait indefinetly
 
     // line options
     SerialPortSettings.c_lflag |= ECHOE;
-	SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ISIG);
+    SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ISIG);
     // SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Non Cannonical mode
 
     // input options
@@ -67,16 +67,16 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
     SerialPortSettings.c_iflag &= ~ICRNL;
 
     // Output options
-	SerialPortSettings.c_oflag &= ~OPOST; // No Output Processing
+    SerialPortSettings.c_oflag &= ~OPOST; // No Output Processing
     SerialPortSettings.c_oflag &= ~ONLCR;
 
     // Set the attributes to the termios structure
-	if((tcsetattr(*fd, TCSANOW, &SerialPortSettings)) != 0) { 
-		printf("\n  ERROR ! in Setting attributes");
-		exit(1);
-	} else {
-		printf("\n  Parameters set:\n    BaudRate = 38400 \n    StopBits = 1 \n    Parity = none \n    VMIN = %zu \n    VTIME = %zu \n", vmin, vtime);
-	}
+    if((tcsetattr(*fd, TCSANOW, &SerialPortSettings)) != 0) { 
+        printf("\n  ERROR ! in Setting attributes");
+        exit(1);
+    } else {
+        printf("\n  Parameters set:\n    BaudRate = 38400 \n    StopBits = 1 \n    Parity = none \n    VMIN = %zu \n    VTIME = %zu \n", vmin, vtime);
+    }
 }
 
 void slice_str(char *buffer, const char *str, size_t start, size_t end) {
