@@ -3,7 +3,7 @@
 Before begin:  
  - [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df);  
  - [elm reference](https://www.elmelectronics.com/wp-content/uploads/2016/07/ELM327DS.pdf);  
-- `man termios`;  
+ - [termios serial params](https://www.cmrr.umn.edu/~strupp/serial.html);  
 
 ### Configuring COM-port on linux  
 
@@ -22,6 +22,9 @@ Remember, that in Linux, everything is a file - so you can apply standart read/w
 Also, for quick tests, I use `screen`:  
 ```
 sudo screen -L /dev/ttyUSB0 38400,cs8
+```  
+```
+sudo stty -F /dev/ttyUSB0 -a
 ```  
 After finishing the screen session, the serial port "saves" the right configuration, so it becomes really useful for debugging, since the port configuration is the main thing, as I mentioned before.  
 

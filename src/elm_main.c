@@ -42,12 +42,12 @@ void main( int argc, char** argv ) {
 		// write command and read result
 		bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO); // for debugging without a car
 		// bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED); // for `prod`
+		ts = get_time();
 
 		if (bytes_read < 0) {
 			printf("Reading error!");
 			continue;
 		}
-		ts = get_time();
 
         // DEBUG
 		printf("\n[%d] time (us): %lu; Bytes Rxed: %zu; Answer: %s\n", 

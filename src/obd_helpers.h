@@ -33,23 +33,42 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
 	struct termios SerialPortSettings;	// Create the structure
 
 	tcgetattr(*fd, &SerialPortSettings); // Get the current attributes of the Serial port
-    
+
+	// control options
     // Setting the Baud rate for reading and writing
 	cfsetispeed(&SerialPortSettings, B38400);
 	cfsetospeed(&SerialPortSettings, B38400);
 
-	SerialPortSettings.c_cflag &= ~PARENB;     // Disables the Parity Enable bit(PARENB), So No Parity
+    // 8N1 - no parity mode
+    SerialPortSettings.c_cflag &= ~PARENB;     // Disables the Parity Enable bit(PARENB), So No Parity
 	SerialPortSettings.c_cflag &= ~CSTOPB;     // CSTOPB = 2 Stop bits, here it is cleared so 1 Stop bit
 	SerialPortSettings.c_cflag &= ~CSIZE;      // Clears the mask for setting the data size
 	SerialPortSettings.c_cflag |=  CS8;        // Set the data bits = 8
+    //
 	SerialPortSettings.c_cflag &= ~CRTSCTS; // No Hardware flow Control
-	SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p
-	SerialPortSettings.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Non Cannonical mode
-	SerialPortSettings.c_oflag &= ~OPOST;                           // No Output Processing
-
+    SerialPortSettings.c_cflag |= CREAD;
+    SerialPortSettings.c_cflag |= CLOCAL;
+    SerialPortSettings.c_cflag &= ~HUPCL;
     // Setting blocking params
 	SerialPortSettings.c_cc[VMIN] = vmin;   // character count 0-255
 	SerialPortSettings.c_cc[VTIME] = vtime; // in deciseconds (0.1 sec.); if == 0 - Wait indefinetly
+
+    // line options
+    SerialPortSettings.c_lflag |= ECHOE;
+	SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ISIG);
+    // SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Non Cannonical mode
+
+    // input options
+    // SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p
+    SerialPortSettings.c_iflag |= IXON;
+    SerialPortSettings.c_iflag &= ~(IXOFF | IXANY);
+    SerialPortSettings.c_iflag |= IGNPAR;
+    SerialPortSettings.c_iflag |= BRKINT;
+    SerialPortSettings.c_iflag &= ~ICRNL;
+
+    // Output options
+	SerialPortSettings.c_oflag &= ~OPOST;                           // No Output Processing
+    SerialPortSettings.c_oflag &= ~ONLCR;
 
     // Set the attributes to the termios structure
 	if((tcsetattr(*fd, TCSANOW, &SerialPortSettings)) != 0) { 
