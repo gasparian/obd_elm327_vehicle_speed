@@ -21,7 +21,7 @@ void get_port(int *fd, char **device) {
                                             /* O_NOCTTY - No terminal will control the process */
                                             /* Open in blocking mode, read will wait           */
     if(*fd < 0) {     
-        printf("\n  Error! Cannot open %s \n", *device);
+        fprintf(stderr, "\n  Error! Cannot open %s \n", *device);
         exit(1);
     } 
     printf("\n %s Opened Successfully! \n", *device);
@@ -72,7 +72,7 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
 
     // Set the attributes to the termios structure
     if((tcsetattr(*fd, TCSANOW, &SerialPortSettings)) != 0) { 
-        printf("\n  ERROR ! in Setting attributes");
+        fprintf(stderr, "\n  ERROR ! in Setting attributes");
         exit(1);
     } else {
         printf("\n  Parameters set:\n    BaudRate = 38400 \n    StopBits = 1 \n    Parity = none \n    VMIN = %zu \n    VTIME = %zu \n", vmin, vtime);

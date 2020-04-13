@@ -54,12 +54,12 @@ void main( int argc, char** argv ) {
         
         // int check = answer_check("41 0D 00", "41 0D", 8); // ++++++++++++++++++++++++++
         // if ( (bytes_read < 0) || (check != 0) ) {
-        //     printf("Speed reading error!\n");
+        //     fprintf(stderr, "Speed reading error!\n");
         //     continue;
         // }
 
         if (bytes_read < 0) { // ----------------------------------
-            printf("Reading error!");
+            fprintf(stderr, "Reading error!");
             continue;
         }
 
