@@ -52,7 +52,7 @@ void main( int argc, char** argv ) {
         ts = get_time();
 
         
-        // int check = answer_check("41 0D 00", "41 0D", 8); // ++++++++++++++++++++++++++
+        // int check = answer_check(answer, "41 0D", bytes_read); // ++++++++++++++++++++++++++
         // if ( (bytes_read < 0) || (check != 0) ) {
         //     fprintf(stderr, "Speed reading error!\n");
         //     continue;
