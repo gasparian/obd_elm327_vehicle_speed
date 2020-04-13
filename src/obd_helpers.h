@@ -79,9 +79,30 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
 	}
 }
 
+void slice_str(char *buffer, const char *str, size_t start, size_t end) {
+    /*--------------- Writes a slice of the input string ---------------*/
+    size_t j = 0;
+    for ( size_t i = start; i <= end; ++i ) {
+        buffer[j++] = str[i];
+    }
+    buffer[j] = 0;
+}
+
+int safe_copy_buffer(char *buffer, const char *str, size_t start, size_t end) {
+    int j = 0;
+    for ( int i=start; i < end; i++) {
+        unsigned char ch = str[i];
+        if ( !((ch == '\0') || (ch == '\r')) ) {
+            buffer[j++] = str[i];
+        }
+    }
+    return j;
+}
+
 size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command) {
     /*---------- Send command to the device and wait for the answer ---------*/
     size_t bytes_read = 0;
+    size_t command_len = strlen(command);
 
     // Discards old data in the rx buffer
     tcflush(*fd, TCIFLUSH); 
@@ -90,8 +111,11 @@ size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command) {
     write(*fd, command, sizeof(command));
 
     // get answer and write to buff
-    bytes_read = read(*fd, buff, buff_size);
-    
+    char answer[buff_size];
+    bytes_read = read(*fd, answer, buff_size);
+    bytes_read -= 3; // remove `>` prompt
+    bytes_read = safe_copy_buffer(buff, answer, command_len, bytes_read);
+
     return bytes_read;
 }
 
@@ -112,23 +136,27 @@ unsigned long get_time() {
     return us;
 }
 
-void slice_str(const char *str, char *buffer, size_t start, size_t end) {
-    /*--------------- Writes a slice of the input string ---------------*/
-    size_t j = 0;
-    for ( size_t i = start; i <= end; ++i ) {
-        buffer[j++] = str[i];
+int answer_check(char *answer, char *cmp, size_t bytes_read) {
+    size_t check_size = strlen(cmp)-1;
+    if ( bytes_read < check_size ) {
+        return -1;
     }
+    char check_str[check_size];
+    slice_str(check_str, answer, 0, check_size);
+    int check = strcmp(check_str, cmp);
+    return check;
 }
 
-int get_vehicle_speed(char *answer, size_t char_size) {
+int get_vehicle_speed(char *answer) {
     /*---------- Converts last bytes of answer; hex-->dec; speed range: 0...255 km\h  --------- */
     char hexstring[2];
-    if ( char_size <= 1 ) {
+    size_t answer_size = strlen(answer);
+    if ( answer_size <= 1 ) {
         return INT32_MIN;
     }
-    size_t start = char_size - 2;
+    size_t start = answer_size - 2;
     start = start >= 0 ? start : 0;
-    slice_str(answer, hexstring, start, char_size-1);
+    slice_str(hexstring, answer, start, answer_size-1);
     int speed = (int)strtol(hexstring, NULL, 16);
     return speed;
 }

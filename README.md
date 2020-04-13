@@ -1,9 +1,5 @@
 ## ELM327 signals processor on linux  
 
-### To do:  
- - check the propper answer for `atz`;  
- - check the propper answer for `01 0D`;  
-
 Before begin:  
  - [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df);  
  - [elm reference](https://www.elmelectronics.com/wp-content/uploads/2016/07/ELM327DS.pdf);  
