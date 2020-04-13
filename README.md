@@ -23,10 +23,10 @@ Also, for quick tests, I use `screen`:
 ```
 sudo screen -L /dev/ttyUSB0 38400,cs8
 ```  
+After finishing the screen session, the serial port "saves" the last configuration, so it becomes really useful for debugging. To get the last serial port configs for particular device, jsut run `stty`:  
 ```
 sudo stty -F /dev/ttyUSB0 -a
 ```  
-After finishing the screen session, the serial port "saves" the right configuration, so it becomes really useful for debugging, since the port configuration is the main thing, as I mentioned before.  
 
 ### Running the code  
 
