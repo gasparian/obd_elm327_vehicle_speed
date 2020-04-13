@@ -59,7 +59,7 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
     // SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Non Cannonical mode
 
     // input options
-    // SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p
+    // SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY); // Disable XON/XOFF flow control both i/p and o/p
     SerialPortSettings.c_iflag |= IXON;
     SerialPortSettings.c_iflag &= ~(IXOFF | IXANY);
     SerialPortSettings.c_iflag |= IGNPAR;
@@ -67,7 +67,7 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
     SerialPortSettings.c_iflag &= ~ICRNL;
 
     // Output options
-	SerialPortSettings.c_oflag &= ~OPOST;                           // No Output Processing
+	SerialPortSettings.c_oflag &= ~OPOST; // No Output Processing
     SerialPortSettings.c_oflag &= ~ONLCR;
 
     // Set the attributes to the termios structure
@@ -121,7 +121,7 @@ void slice_str(const char *str, char *buffer, size_t start, size_t end) {
 }
 
 int get_vehicle_speed(char *answer, size_t char_size) {
-    /*---------- Converts last bytes of answer hex-->dec; speed range: 0...255 km\h  --------- */
+    /*---------- Converts last bytes of answer; hex-->dec; speed range: 0...255 km\h  --------- */
     char hexstring[2];
     if ( char_size <= 1 ) {
         return INT32_MIN;
