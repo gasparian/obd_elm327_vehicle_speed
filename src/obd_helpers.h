@@ -82,7 +82,7 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
 void slice_str(char *buffer, const char *str, size_t start, size_t end) {
     /*--------------- Writes a slice of the input string ---------------*/
     size_t j = 0;
-    for ( size_t i = start; i <= end; ++i ) {
+    for ( size_t i = start; i < end; ++i ) {
         buffer[j++] = str[i];
     }
     buffer[j] = 0;
@@ -137,7 +137,7 @@ unsigned long get_time() {
 }
 
 int answer_check(char *answer, char *cmp, size_t bytes_read) {
-    size_t check_size = strlen(cmp)-1;
+    size_t check_size = strlen(cmp);
     if ( bytes_read < check_size ) {
         return -1;
     }
@@ -156,7 +156,7 @@ int get_vehicle_speed(char *answer) {
     }
     size_t start = answer_size - 2;
     start = start >= 0 ? start : 0;
-    slice_str(hexstring, answer, start, answer_size-1);
+    slice_str(hexstring, answer, start, answer_size);
     int speed = (int)strtol(hexstring, NULL, 16);
     return speed;
 }

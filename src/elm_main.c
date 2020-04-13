@@ -47,23 +47,23 @@ void main( int argc, char** argv ) {
 		bzero(answer, buff_size);
 
 		// write command and read result
-		bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO); // for debugging without a car
-		// bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED); // for `prod` <<<<<<<<<<<<<<<<<<<<<<
+		bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO); // for debugging without a car --------------------------------
+		// bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED); // for `prod` ++++++++++++++++++++++++++
 		ts = get_time();
 
 		
-		// int check = answer_check("41 0D 00", "41 0D", 8); <<<<<<<<<<<<<<<<<<<<<<
+		// int check = answer_check("41 0D 00", "41 0D", 8); // ++++++++++++++++++++++++++
 		// if ( (bytes_read < 0) || (check != 0) ) {
-		// 	printf("Reading error!");
+		// 	printf("Speed reading error!\n");
 		// 	continue;
 		// }
 
-		if (bytes_read < 0) {
+		if (bytes_read < 0) { // ----------------------------------
 			printf("Reading error!");
 			continue;
 		}
 
-        // DEBUG
+        // DEBUG // ----------------------------------
 		printf("\n[%d] time (us): %lu; Bytes Rxed: %zu; \nAnswer: \n", 
 		       iter-1, ts, bytes_read);
 		printf("%s", answer);
@@ -72,8 +72,8 @@ void main( int argc, char** argv ) {
 
 		// usleep(1000000); // sleep for 1 sec.
 		
-		// get the vehicle speed from string <<<<<<<<<<<<<<<<<<<<<<
-		// speed = get_vehicle_speed(answer);
+		// get the vehicle speed from string ++++++++++++++++++++++++++
+		// speed = get_vehicle_speed("41 0D FF");
 	    // printf("\n[%d] time (us): %lu; Bytes Rxed: %zu; Speed: %d\n", 
 		//        iter-1, ts, bytes_read, speed);
 		
