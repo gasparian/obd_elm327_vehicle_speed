@@ -46,7 +46,7 @@ Or run with `debug` flag to test the code without a car:
 ```
 sudo ./elm_main /dev/ttyUSB0 debug
 ```  
-The output of the main script is csv-like formatted, so it convenient to dump ot file and analyze:  
+The output of the main script is csv-like formatted, so it convenient to dump it to file and analyze:  
 ```
 sudo ./elm_main /dev/ttyUSB0 > /tmp/elm_speed.csv
 ```  
