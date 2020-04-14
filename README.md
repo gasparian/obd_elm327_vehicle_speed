@@ -38,5 +38,10 @@ Run, passing the needed device name (you need to be root or superuser):
 ```
 sudo ./elm_main /dev/ttyUSB0
 ```  
+Or run with `debug` flag to test the code without a car:  
+```
+sudo ./elm_main /dev/ttyUSB0 debug
+```  
+
 
 

@@ -1,8 +1,8 @@
 #ifndef OBD_HELPERS_H
 #define OBD_HELPERS_H
 
-#define SET_LINE_BRK "AT L1\r"
-#define DEVICE_INFO "atz\r"
+#define SET_LINE_BRK "at l1\r"
+#define DEVICE_INFO "atws\r"
 #define PID_SPEED "01 0D\r"
 
 #include <fcntl.h>   // File control definitions
@@ -17,7 +17,7 @@
 void get_port(int *fd, char **device) {
     /*------------------------------- Opening the Serial Port ---------------------------------*/
 
-    *fd = open(*device, O_RDWR | O_NOCTTY);    /* O_RDWR   - Read/Write access to serial port     */
+    *fd = open(*device, O_RDWR | O_NOCTTY); /* O_RDWR   - Read/Write access to serial port     */
                                             /* O_NOCTTY - No terminal will control the process */
                                             /* Open in blocking mode, read will wait           */
     if(*fd < 0) {     
@@ -99,7 +99,7 @@ int safe_copy_buffer(char *buffer, const char *str, size_t start, size_t end) {
     return j;
 }
 
-size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command) {
+size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command, int is_delayed) {
     /*---------- Send command to the device and wait for the answer ---------*/
     size_t bytes_read = 0;
     size_t command_len = strlen(command);
@@ -109,6 +109,9 @@ size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command) {
 
     // send control command to elm327
     write(*fd, command, sizeof(command));
+    if ( is_delayed ) {
+        usleep(1000000); // sleep for 1 sec.
+    }
 
     // get answer and write to buff
     char answer[buff_size];
