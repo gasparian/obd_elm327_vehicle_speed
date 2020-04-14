@@ -16,11 +16,11 @@ void main( int argc, char** argv ) {
     if (argc > 1) {
         device_name = argv[1];
     }
-	int debug_mode = 0;
+    int debug_mode = 0;
     if (argc > 2) {
         if (strcmp(argv[2], "debug") == 0) {
-			debug_mode = 1;
-		}
+            debug_mode = 1;
+        }
     }
     /*----------------------------------------------------------------*/
 
@@ -55,32 +55,32 @@ void main( int argc, char** argv ) {
         bzero(answer, buff_size);
 
         // write command and read result
-		if ( debug_mode ) {
+        if ( debug_mode ) {
             bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO, 0);
-		} else {
+        } else {
             bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED, 0);
-		}
+        }
         ts = get_time();
 
         if ( debug_mode ) {
-			if (bytes_read < 0) { 
-				fprintf(stderr, "%d, %lu, 0, Reading error!\n", 
-			            iter-1, ts);
-				continue;
-			}
-			printf("%d, %lu, %zu, %s\n", 
+            if (bytes_read < 0) { 
+                fprintf(stderr, "%d, %lu, 0, Reading error!\n", 
+                        iter-1, ts);
+                continue;
+            }
+            printf("%d, %lu, %zu, %s\n", 
                    iter-1, ts, bytes_read, answer);
-		} else {
-			int check = answer_check(answer, "41 0D", bytes_read); 
-			if ( (bytes_read < 0) || (check != 0) ) {
-				fprintf(stderr, "%d, %lu, %zu, Reading error!\n", 
-				        iter-1, ts, bytes_read);
-				continue;
-			speed = get_vehicle_speed(answer);
-			printf("%d, %lu, %zu, %d\n", 
-				   iter-1, ts, bytes_read, speed);
-			}
-		}
+        } else {
+            int check = answer_check(answer, "41 0D", bytes_read); 
+            if ( (bytes_read < 0) || (check != 0) ) {
+                fprintf(stderr, "%d, %lu, %zu, Reading error!\n", 
+                        iter-1, ts, bytes_read);
+                continue;
+            speed = get_vehicle_speed(answer);
+            printf("%d, %lu, %zu, %d\n", 
+                   iter-1, ts, bytes_read, speed);
+            }
+        }
         
     }
     free(answer);
