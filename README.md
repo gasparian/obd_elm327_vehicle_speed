@@ -57,5 +57,8 @@ To monitor the logfile while dumping:
 tail -f /tmp/elm_log.csv
 ```  
 
+### To do:  
 
+ - set the elm<-->ecu communication via `AT ST hh` < 32 (32 ~= 200 ms) and try 10Hz transmission;  
+ - set the elm<-->ecu wakeup time via `AT SW hh` < 3 sec. (FF == 5 sec.) and try 10Hz transmission;  
 
