@@ -9,9 +9,6 @@ void main( int argc, char** argv ) {
 
     /*------------------------ Set initial params --------------------*/
     int fd; /*File Descriptor*/
-    size_t buff_size = 21; // nbytes
-    size_t vmin = 21; // min characters to read (can be <= buff_size)
-    size_t vtime = 1; // blocking read time in deciseconds
     char *device_name = "/dev/ttyUSB0";    
     if (argc > 1) {
         device_name = argv[1];
@@ -22,6 +19,12 @@ void main( int argc, char** argv ) {
             debug_mode = 1;
         }
     }
+    size_t vmin = 18;
+    if ( debug_mode ) {
+        vmin = 21;
+    }
+    size_t buff_size = 21; // nbytes
+    size_t vtime = 2; // blocking read time in deciseconds
     /*----------------------------------------------------------------*/
 
     /*----------------------- Configure serial port ------------------*/
@@ -39,8 +42,15 @@ void main( int argc, char** argv ) {
     unsigned long tsw, tsr;
 
     // elm hard reset
+    int check = -1;
     bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_HARD_RESET, 1);
-    int check = answer_check(answer, "ELM327 v1.5", bytes_read);
+    if ( debug_mode ) {
+        check = answer_check(answer, "ELM327 v1.5", bytes_read);
+    } else {
+        bzero(answer, buff_size);
+        bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED, 1);
+        check = answer_check(answer, "41 0D", 5);
+    }
     if (check != 0) {
         fprintf(stderr, "Elm bad response!\n");
         close(fd); // Close serial port
@@ -48,7 +58,7 @@ void main( int argc, char** argv ) {
     }
     printf("Ready to talk!\n");
 
-    printf("\nid, wtime, rtime, bytes_read, data\n");
+    printf("\nid,wtime,rtime,bytes_read,data\n");
     int iter = 0;
     while (++iter) {
         // clean the buff array
@@ -72,15 +82,15 @@ void main( int argc, char** argv ) {
             printf("%d, %lu, %lu, %zu, %s\n", 
                    iter-1, tsw, tsr, bytes_read, answer);
         } else {
-            int check = answer_check(answer, "41 0D", bytes_read); 
+            int check = answer_check(answer, "41 0D", 5);
             if ( (bytes_read < 0) || (check != 0) ) {
                 fprintf(stderr, "%d, %lu, %lu, %zu, Reading error!\n", 
                         iter-1, tsw, tsr, bytes_read);
                 continue;
+            }
             speed = get_vehicle_speed(answer);
             printf("%d, %lu, %lu, %zu, %d\n", 
                    iter-1, tsw, tsr, bytes_read, speed);
-            }
         }
         
     }
