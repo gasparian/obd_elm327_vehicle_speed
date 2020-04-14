@@ -38,8 +38,8 @@ void main( int argc, char** argv ) {
     int16_t speed = INT16_MIN;
     unsigned long ts;
 
-    // warming up
-    bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO, 1);
+    // elm hard reset
+    bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_HARD_RESET, 1);
     int check = answer_check(answer, "ELM327 v1.5", bytes_read);
     if (check != 0) {
         fprintf(stderr, "Elm bad response!\n");
