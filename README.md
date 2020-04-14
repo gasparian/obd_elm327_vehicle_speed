@@ -50,6 +50,10 @@ The output of the main script is csv-like formatted, so it convenient to dump it
 ```
 sudo ./elm_main /dev/ttyUSB0 > /tmp/elm_speed.csv
 ```  
+To monitor the logfile while dumping:  
+```
+tail -f /tmp/elm_log.csv
+```  
 
 
 
