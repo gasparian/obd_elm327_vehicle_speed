@@ -10,7 +10,7 @@ Before begin:
 
 ### Configuring COM-port  
 
-The main thing - is to configure serial port in right way. The communication itself is straight forward.  
+The main thing - is to configure serial port in a right way. The communication itself is straight forward.  
 Here are some basic serial port parameters for elm327 devices:  
  - Baudrate - 38400; 
  - 8 data bits;  
