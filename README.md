@@ -49,7 +49,7 @@ sudo ./elm_main /dev/ttyUSB0 debug
 ```  
 The output of the main script is csv-like formatted, so it convenient to dump it to file and analyze:  
 ```
-sudo ./elm_main /dev/ttyUSB0 > /tmp/elm_speed.csv
+sudo ./elm_main /dev/ttyUSB0 > /tmp/elm_speed.csv 2>&1
 ```  
 To monitor the logfile while dumping:  
 ```

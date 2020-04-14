@@ -64,7 +64,8 @@ void main( int argc, char** argv ) {
 
         if ( debug_mode ) {
 			if (bytes_read < 0) { 
-				fprintf(stderr, "Reading error!");
+				fprintf(stderr, "%d, %lu, 0, Reading error!\n", 
+			            iter-1, ts);
 				continue;
 			}
 			printf("%d, %lu, %zu, %s\n", 
@@ -72,7 +73,8 @@ void main( int argc, char** argv ) {
 		} else {
 			int check = answer_check(answer, "41 0D", bytes_read); 
 			if ( (bytes_read < 0) || (check != 0) ) {
-				fprintf(stderr, "Speed reading error!\n");
+				fprintf(stderr, "%d, %lu, %zu, Reading error!\n", 
+				        iter-1, ts, bytes_read);
 				continue;
 			speed = get_vehicle_speed(answer);
 			printf("%d, %lu, %zu, %d\n", 
