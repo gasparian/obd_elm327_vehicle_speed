@@ -10,7 +10,7 @@ void main( int argc, char** argv ) {
     /*------------------------ Set initial params --------------------*/
     int fd; /*File Descriptor*/
     size_t buff_size = 21; // nbytes
-    size_t vmin = 21; // min characters to read (can be != buff_size)
+    size_t vmin = 21; // min characters to read (can be <= buff_size)
     size_t vtime = 1; // blocking read time in deciseconds
     char *device_name = "/dev/ttyUSB0";    
     if (argc > 1) {
