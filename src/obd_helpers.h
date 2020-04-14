@@ -31,12 +31,11 @@ void get_port(int *fd, char **device) {
 void serial_setup(int *fd, size_t vmin, size_t vtime) {
     /*---------- Setting the Attributes of the serial port using termios structure ------------*/
     
-    struct termios SerialPortSettings;    // Create the structure
+    struct termios SerialPortSettings;
 
     tcgetattr(*fd, &SerialPortSettings); // Get the current attributes of the Serial port
 
-    // control options
-    // Setting the Baud rate for reading and writing
+    // Control options
     cfsetispeed(&SerialPortSettings, B38400);
     cfsetospeed(&SerialPortSettings, B38400);
 
@@ -54,12 +53,12 @@ void serial_setup(int *fd, size_t vmin, size_t vtime) {
     SerialPortSettings.c_cc[VMIN] = vmin;   // character count 0-255
     SerialPortSettings.c_cc[VTIME] = vtime; // in deciseconds (0.1 sec.); if == 0 - Wait indefinetly
 
-    // line options
+    // Line options
     SerialPortSettings.c_lflag |= ECHOE;
     SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ISIG);
     // SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Non Cannonical mode
 
-    // input options
+    // Input options
     // SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY); // Disable XON/XOFF flow control both i/p and o/p
     SerialPortSettings.c_iflag |= IXON;
     SerialPortSettings.c_iflag &= ~(IXOFF | IXANY);
