@@ -36,7 +36,7 @@ void main( int argc, char** argv ) {
     char *answer = malloc(buff_size);
     size_t bytes_read = 0;
     int16_t speed = INT16_MIN;
-    unsigned long ts;
+    unsigned long tsw, tsr;
 
     // elm hard reset
     bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_HARD_RESET, 1);
@@ -48,37 +48,38 @@ void main( int argc, char** argv ) {
     }
     printf("Ready to talk!\n");
 
-    printf("\nid, time, bytes_read, data\n");
+    printf("\nid, wtime, rtime, bytes_read, data\n");
     int iter = 0;
     while (++iter) {
         // clean the buff array
         bzero(answer, buff_size);
 
         // write command and read result
+		tsw = get_time();
         if ( debug_mode ) {
             bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO, 0);
         } else {
             bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED, 0);
         }
-        ts = get_time();
+        tsr = get_time();
 
         if ( debug_mode ) {
             if (bytes_read < 0) { 
-                fprintf(stderr, "%d, %lu, 0, Reading error!\n", 
-                        iter-1, ts);
+                fprintf(stderr, "%d, %lu, %lu, 0, Reading error!\n", 
+                        iter-1, tsw, tsr);
                 continue;
             }
-            printf("%d, %lu, %zu, %s\n", 
-                   iter-1, ts, bytes_read, answer);
+            printf("%d, %lu, %lu, %zu, %s\n", 
+                   iter-1, tsw, tsr, bytes_read, answer);
         } else {
             int check = answer_check(answer, "41 0D", bytes_read); 
             if ( (bytes_read < 0) || (check != 0) ) {
-                fprintf(stderr, "%d, %lu, %zu, Reading error!\n", 
-                        iter-1, ts, bytes_read);
+                fprintf(stderr, "%d, %lu, %lu, %zu, Reading error!\n", 
+                        iter-1, tsw, tsr, bytes_read);
                 continue;
             speed = get_vehicle_speed(answer);
-            printf("%d, %lu, %zu, %d\n", 
-                   iter-1, ts, bytes_read, speed);
+            printf("%d, %lu, %lu, %zu, %d\n", 
+                   iter-1, tsw, tsr, bytes_read, speed);
             }
         }
         
