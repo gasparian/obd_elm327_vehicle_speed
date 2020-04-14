@@ -6,6 +6,7 @@ Before begin:
  - [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df);  
  - [elm reference](https://www.elmelectronics.com/wp-content/uploads/2016/07/ELM327DS.pdf);  
  - [termios serial params](https://www.cmrr.umn.edu/~strupp/serial.html);  
+ - [OBD-II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs);  
 
 ### Configuring COM-port  
 
