@@ -35,7 +35,7 @@ void main( int argc, char** argv ) {
     /*----------------------- Talking to the device ------------------*/
     char *answer = malloc(buff_size);
     size_t bytes_read = 0;
-    int speed = 0;
+    int16_t speed = INT16_MIN;
     unsigned long ts;
     // warming up
     bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO, 1);
@@ -66,9 +66,9 @@ void main( int argc, char** argv ) {
 				fprintf(stderr, "Reading error!");
 				continue;
 			}
-			printf("\n[%d] time (us): %lu; Bytes Rxed: %zu; \nAnswer: \n", 
-                   iter-1, ts, bytes_read);
-			printf("%s", answer);
+			printf("\n[%d] time (us): %lu; Bytes Rxed: %zu; Answer: %s\n", 
+                   iter-1, ts, bytes_read, answer);
+			// printf("%s", answer);
 			printf("\n");
 		} else {
 			int check = answer_check(answer, "41 0D", bytes_read); 

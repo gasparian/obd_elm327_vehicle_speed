@@ -150,17 +150,17 @@ int answer_check(char *answer, char *cmp, size_t bytes_read) {
     return check;
 }
 
-int get_vehicle_speed(char *answer) {
+int16_t get_vehicle_speed(char *answer) {
     /*---------- Converts last bytes of answer; hex-->dec; speed range: 0...255 km\h  --------- */
     char hexstring[2];
     size_t answer_size = strlen(answer);
     if ( answer_size <= 1 ) {
-        return INT32_MIN;
+        return INT16_MIN;
     }
     size_t start = answer_size - 2;
     start = start >= 0 ? start : 0;
     slice_str(hexstring, answer, start, answer_size);
-    int speed = (int)strtol(hexstring, NULL, 16);
+    int16_t speed = (int16_t)strtol(hexstring, NULL, 16);
     return speed;
 }
 
