@@ -3,6 +3,7 @@
 
 #define SET_LINE_BRK "at l1\r"
 #define DEVICE_INFO "atws\r"
+#define DEVICE_HARD_RESET "atz\r"
 #define PID_SPEED "01 0D\r"
 
 #include <fcntl.h>   // File control definitions
