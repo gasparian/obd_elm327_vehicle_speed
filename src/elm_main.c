@@ -3,11 +3,11 @@
 void main( int argc, char** argv ) {
     setbuf(stdout, NULL); // disable stdout buffering
 
-    printf("\n +----------------------------------------+");
-    printf("\n |         Serial Port Read/Write         |");
-    printf("\n +----------------------------------------+");
+    printf("+----------------------------------------+\n");
+    printf("|         Serial Port Read/Write         |\n");
+    printf("+----------------------------------------+\n");
 
-    /*------------------------ Set initial params --------------------*/
+    /*------------------- Set initial params and vars ----------------*/
     int fd; /*File Descriptor*/
     char *device_name = "/dev/ttyUSB0";    
     if (argc > 1) {
@@ -58,7 +58,7 @@ void main( int argc, char** argv ) {
         close(fd); // Close serial port
         exit(1);
     }
-    printf("Ready to talk!\n");
+    printf("\nReady to talk!\n");
 
     printf("\nid,wtime,rtime,bytes_read,data\n");
     while (++iter) {
