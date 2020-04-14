@@ -1,11 +1,13 @@
-## ELM327 signals processor on linux  
+## ELM327 signals processing on Linux  
+
+The goal is to get a speed from vehicle using a super-cheap elm327 controller and a standardized OBD API.  
 
 Before begin:  
  - [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df);  
  - [elm reference](https://www.elmelectronics.com/wp-content/uploads/2016/07/ELM327DS.pdf);  
  - [termios serial params](https://www.cmrr.umn.edu/~strupp/serial.html);  
 
-### Configuring COM-port on linux  
+### Configuring COM-port  
 
 The main thing - is to configure serial port in right way. The communication itself is straight forward.  
 Here are some basic serial port parameters for elm327 devices:  
@@ -28,7 +30,9 @@ After finishing the screen session, the serial port "saves" the last configurati
 sudo stty -F /dev/ttyUSB0 -a
 ```  
 
-### Running the code  
+### Using the code  
+
+All you need is stored in `obd_helpers.h`. The `elm_main.c` needed only to show the functionality.  
 
 Compile:  
 ```
@@ -41,6 +45,10 @@ sudo ./elm_main /dev/ttyUSB0
 Or run with `debug` flag to test the code without a car:  
 ```
 sudo ./elm_main /dev/ttyUSB0 debug
+```  
+The output of the main script is csv-like formatted, so it convenient to dump ot file and analyze:  
+```
+sudo ./elm_main /dev/ttyUSB0 > /tmp/elm_speed.csv
 ```  
 
 

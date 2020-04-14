@@ -48,6 +48,7 @@ void main( int argc, char** argv ) {
     }
     printf("Ready to talk!\n");
 
+    printf("\nid, time, bytes_read, data\n");
     int iter = 0;
     while (++iter) {
         // clean the buff array
@@ -66,7 +67,7 @@ void main( int argc, char** argv ) {
 				fprintf(stderr, "Reading error!");
 				continue;
 			}
-			printf("\n[%d] time (us): %lu; Bytes Rxed: %zu; Answer: %s", 
+			printf("%d, %lu, %zu, %s\n", 
                    iter-1, ts, bytes_read, answer);
 		} else {
 			int check = answer_check(answer, "41 0D", bytes_read); 
@@ -74,7 +75,7 @@ void main( int argc, char** argv ) {
 				fprintf(stderr, "Speed reading error!\n");
 				continue;
 			speed = get_vehicle_speed(answer);
-			printf("\n[%d] time (us): %lu; Bytes Rxed: %zu; Speed: %d", 
+			printf("%d, %lu, %zu, %d\n", 
 				   iter-1, ts, bytes_read, speed);
 			}
 		}
