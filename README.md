@@ -1,4 +1,4 @@
-## ELM327 signals processing on Linux  
+## ELM327 communication on Linux  
 
 The goal is to get a vehicle speed with high frequency, using a super-cheap elm327 controller and a standardized OBD API.  
 The speed is usually encoded with two-digit hexadecimal number and can vary in range 0...255 km\h.  
