@@ -152,7 +152,7 @@ int answer_check(char *answer, char *cmp, size_t bytes_read) {
 }
 
 int16_t get_vehicle_speed(char *answer) {
-    /*---------- Converts last bytes of answer; hex-->dec; speed range: 0...255 km\h  --------- */
+    /*---------- Converts last byte of answer; hex-->dec; speed range: 0...255 km\h  --------- */
     char hexstring[2];
     size_t answer_size = strlen(answer);
     if ( answer_size <= 1 ) {

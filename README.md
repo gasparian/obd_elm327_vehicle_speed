@@ -1,6 +1,7 @@
 ## ELM327 signals processing on Linux  
 
 The goal is to get a speed from vehicle using a super-cheap elm327 controller and a standardized OBD API.  
+The speed is usually encoded with two-digit hexadecimal number from and can vary in range 0...255 km\h.  
 
 Before begin:  
  - [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df);  
@@ -33,7 +34,7 @@ sudo stty -F /dev/ttyUSB0 -a
 
 ### Using the code  
 
-All you need is stored in `obd_helpers.h`. The `elm_main.c` needed only to show the functionality.  
+All you need is stored in `obd_helpers.h`. The `elm_main.c` is only to show the functionality.  
 
 Compile:  
 ```
