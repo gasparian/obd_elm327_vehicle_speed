@@ -55,7 +55,7 @@ void main( int argc, char** argv ) {
         bzero(answer, buff_size);
 
         // write command and read result
-		tsw = get_time();
+        tsw = get_time();
         if ( debug_mode ) {
             bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_INFO, 0);
         } else {
