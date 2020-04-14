@@ -25,6 +25,12 @@ void main( int argc, char** argv ) {
     }
     size_t buff_size = 21; // nbytes
     size_t vtime = 2; // blocking read time in deciseconds
+	char *msg = "%d, %lu, %lu, %zu, %s\n";
+	size_t bytes_read = 0;
+    int16_t speed = INT16_MIN;
+    unsigned long tsw, tsr;
+	int check = -1;
+	int iter = 0;
     /*----------------------------------------------------------------*/
 
     /*----------------------- Configure serial port ------------------*/
@@ -37,14 +43,10 @@ void main( int argc, char** argv ) {
 
     /*----------------------- Talking to the device ------------------*/
     char *answer = malloc(buff_size);
-    size_t bytes_read = 0;
-    int16_t speed = INT16_MIN;
-    unsigned long tsw, tsr;
 
     // elm hard reset
-    int check = -1;
-    bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_HARD_RESET, 1);
     if ( debug_mode ) {
+		bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_HARD_RESET, 1);
         check = answer_check(answer, "ELM327 v1.5", bytes_read);
     } else {
         bzero(answer, buff_size);
@@ -59,7 +61,6 @@ void main( int argc, char** argv ) {
     printf("Ready to talk!\n");
 
     printf("\nid,wtime,rtime,bytes_read,data\n");
-    int iter = 0;
     while (++iter) {
         // clean the buff array
         bzero(answer, buff_size);
@@ -75,22 +76,18 @@ void main( int argc, char** argv ) {
 
         if ( debug_mode ) {
             if (bytes_read < 0) { 
-                fprintf(stderr, "%d, %lu, %lu, 0, Reading error!\n", 
-                        iter-1, tsw, tsr);
+                fprintf(stderr, msg, iter-1, tsw, tsr, 0, "Reading error!");
                 continue;
             }
-            printf("%d, %lu, %lu, %zu, %s\n", 
-                   iter-1, tsw, tsr, bytes_read, answer);
+            printf(msg, iter-1, tsw, tsr, bytes_read, answer);
         } else {
             int check = answer_check(answer, "41 0D", 5);
             if ( (bytes_read < 0) || (check != 0) ) {
-                fprintf(stderr, "%d, %lu, %lu, %zu, Reading error!\n", 
-                        iter-1, tsw, tsr, bytes_read);
+                fprintf(stderr, msg, iter-1, tsw, tsr, bytes_read, "Reading error!");
                 continue;
             }
             speed = get_vehicle_speed(answer);
-            printf("%d, %lu, %lu, %zu, %d\n", 
-                   iter-1, tsw, tsr, bytes_read, speed);
+            printf(msg, iter-1, tsw, tsr, bytes_read, speed);
         }
         
     }
