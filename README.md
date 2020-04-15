@@ -85,7 +85,7 @@ Here are PIDs supported by tested car:
 ### To do:  
  - set the elm<-->ecu communication via `AT ST hh` < 32 (32 ~= 200 ms) and try 10Hz transmission - seems like no effect...;  
  - try to set maximum expected number of responses as a single hex digit after request: `01 0D 1` or `01 0D 01`?;   
- - turn on the headers `AT H1` and try to request speed, you should see the ECU id: (`83 F1 10 41 0D 00 D2`, `84 F1 10 41 0C 00 00 D2`);  
+ - turn on the headers `AT H1` and try to request speed, you should see the ECU id: (`83 F1 10 41 0D 00 D2`, `84 F1 10 41 0C 00 00 D2`), so it looks like the default ECU is engine (since `10` code);  
   - check the protocol for the car: AT DP <- можно посмотреть, AT SP h <- найти протокол по номеру h;  
   - check the barometric pressure and temperature;  
   - try to set engine ECU header `AT SH 86 10 F1` and change the priority byte (`86`) to a higher value;  
