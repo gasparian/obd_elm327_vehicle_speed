@@ -57,8 +57,35 @@ To monitor the logfile while dumping:
 tail -f /tmp/elm_log.csv
 ```  
 
+#### Skoda Octavia A5 2011 PIDS  
+Here are PIDs supported by tested car:  
+```
+{
+    '03': 'Fuel system status',
+    '04': 'Calculated engine load',
+    '05': 'Engine coolant temperature',
+    '06': 'Short term fuel trim—Bank 1',
+    '07': 'Long term fuel trim—Bank 1',
+    '0B': 'Intake manifold absolute pressure',
+    '0C': 'Engine RPM',
+    '0D': 'Vehicle speed',
+    '0E': 'Timing advance',
+    '0F': 'Intake air temperature',
+    '11': 'Throttle position',
+    '12': 'Commanded secondary air status',
+    '13': 'Oxygen sensors present (in 2 banks)',
+    '15': 'Oxygen Sensor 2 A: Voltage B: Short term fuel trim',
+    '1C': 'OBD standards this vehicle conforms to',
+    '20': 'PIDs supported [21 - 40]',
+    '33': 'Absolute Barometric Pressure'
+}
+```  
+
+
 ### To do:  
-
- - set the elm<-->ecu communication via `AT ST hh` < 32 (32 ~= 200 ms) and try 10Hz transmission;  
- - set the elm<-->ecu wakeup time via `AT SW hh` < 3 sec. (FF == 5 sec.) and try 10Hz transmission;  
-
+ - set the elm<-->ecu communication via `AT ST hh` < 32 (32 ~= 200 ms) and try 10Hz transmission - seems like no effect...;  
+ - try to set maximum expected number of responses as a single hex digit after request: `01 0D 1` or `01 0D 01`?;   
+ - turn on the headers `AT H1` and try to request speed, you should see the ECU id: (`83 F1 10 41 0D 00 D2`, `84 F1 10 41 0C 00 00 D2`);  
+  - check the protocol for the car: AT DP <- можно посмотреть, AT SP h <- найти протокол по номеру h;  
+  - check the barometric pressure and temperature;  
+  - try to set engine ECU header `AT SH 86 10 F1` and change the priority byte (`86`) to a higher value;  

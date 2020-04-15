@@ -1,13 +1,15 @@
 #ifndef OBD_HELPERS_H
 #define OBD_HELPERS_H
 
-#define SET_LINE_BRK "at l1\r"
+#define SET_LINE_BRK "atl1\r"
 #define DEVICE_INFO "atws\r"
 #define DEVICE_HARD_RESET "atz\r"
-#define PID_SPEED "01 0D\r"
+#define PID_SPEED "010D\r"
+// #define PID_SPEED "010D1\r"
+// #define PID_SPEED "010D01\r"
 
-#include <fcntl.h>   // File control definitions
 #include <time.h>
+#include <fcntl.h>   // File control definitions
 #include <stdio.h>
 #include <unistd.h>  // UNIX standard definitions 
 #include <string.h>
@@ -99,7 +101,7 @@ int safe_copy_buffer(char *buffer, const char *str, size_t start, size_t end) {
     return j;
 }
 
-size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command, int is_delayed) {
+size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command, int delay) {
     /*---------- Send command to the device and wait for the answer ---------*/
     size_t bytes_read = 0;
     size_t command_len = strlen(command);
@@ -109,8 +111,10 @@ size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command, int is_del
 
     // send control command to elm327
     write(*fd, command, sizeof(command));
-    if ( is_delayed ) {
-        usleep(1000000); // sleep for 1 sec.
+
+    if ( delay ) {
+        long int sleep = delay * 1000000L;
+        usleep(sleep); // sleep time in us
     }
 
     // get answer and write to buff
@@ -118,6 +122,9 @@ size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command, int is_del
     bytes_read = read(*fd, answer, buff_size);
     bytes_read -= 3; // remove `>` prompt
     bytes_read = safe_copy_buffer(buff, answer, command_len, bytes_read);
+
+    // DEBUG
+    // printf("\nInside elm read:\n %s\n %s \n", answer, buff);
 
     return bytes_read;
 }
@@ -147,13 +154,18 @@ int answer_check(char *answer, char *cmp, size_t bytes_read) {
     char check_str[check_size];
     slice_str(check_str, answer, 0, check_size);
     int check = strcmp(check_str, cmp);
+
+    // DEBUG
+    // printf("\nIn comparison function: %zu; %d\n %s (%zu)\n%s (%zu)\n", 
+    //        check_size, check, check_str, strlen(check_str), cmp, strlen(cmp));
+
     return check;
 }
 
 int16_t get_vehicle_speed(char *answer) {
     /*---------- Converts last byte of answer; hex-->dec; speed range: 0...255 km\h  --------- */
     char hexstring[2];
-    size_t answer_size = strlen(answer);
+    size_t answer_size = strlen(answer)-1; // -1 to ignore a space
     if ( answer_size <= 1 ) {
         return INT16_MIN;
     }
