@@ -57,7 +57,7 @@ To monitor the logfile while dumping:
 tail -f /tmp/elm_log.csv
 ```  
 
-#### Skoda Octavia A5 2011 PIDS  
+#### Skoda Octavia A5 2011 actual OBD PIDS  
 Here are PIDs supported by tested car:  
 ```
 {
