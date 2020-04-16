@@ -26,11 +26,11 @@ void main( int argc, char** argv ) {
     size_t buff_size = 21; // nbytes
     size_t vtime = 2; // blocking read time in deciseconds
 
-    char *msg = "%d,%lu,%lu,%zu,%s\n";
-    char *msg_speed = "%d,%lu,%lu,%zu,%d\n";
+    char *msg = "%d,%lu,%lu,%lu,%zu,%s\n";
+    char *msg_speed = "%d,%lu,%lu,%lu,%zu,%d\n";
     size_t bytes_read = 0;
     int16_t speed = INT16_MIN;
-    unsigned long tsw, tsr;
+    unsigned long tsw, tsr, dt;
     int check = -1;
     int iter = 0;
     /*----------------------------------------------------------------*/
@@ -63,7 +63,7 @@ void main( int argc, char** argv ) {
     /*----------------------------------------------------------------*/
 
     /*----------------------- Log the output -------------------------*/
-    printf("\nid,wtime,rtime,bytes_read,data\n");
+    printf("\nid,wtime,rtime,dt,bytes_read,data\n");
     while (++iter) {
         // clean the buff array
         bzero(answer, buff_size);
@@ -76,21 +76,22 @@ void main( int argc, char** argv ) {
             bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED, 0);
         }
         tsr = get_time();
+		dt = tsr - tsw;
 
         if ( debug_mode ) {
             if (bytes_read < 0) { 
-                fprintf(stderr, msg, iter-1, tsw, tsr, 0, "");
+                fprintf(stderr, msg, iter-1, tsw, tsr, dt, 0, "");
                 continue;
             }
-            printf(msg, iter-1, tsw, tsr, bytes_read, answer);
+            printf(msg, iter-1, tsw, tsr, dt, bytes_read, answer);
         } else {
             int check = answer_check(answer, "41 0D", 5);
             if ( (bytes_read < 0) || (check != 0) ) {
-                fprintf(stderr, msg, iter-1, tsw, tsr, bytes_read, "");
+                fprintf(stderr, msg, iter-1, tsw, tsr, dt, bytes_read, "");
                 continue;
             }
             speed = get_vehicle_speed(answer);
-            printf(msg_speed, iter-1, tsw, tsr, bytes_read, speed);
+            printf(msg_speed, iter-1, tsw, tsr, dt, bytes_read, speed);
             // printf(msg, iter-1, tsw, tsr, bytes_read, answer);
         }
     }
