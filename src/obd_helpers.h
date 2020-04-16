@@ -92,6 +92,7 @@ void slice_str(char *buffer, const char *str, size_t start, size_t end) {
 }
 
 int safe_copy_buffer(char *buffer, const char *str, size_t start, size_t end) {
+    /*--------------- Creates new char array with cleaned answer ---------------*/
     int j = 0;
     for ( int i=start; i < end; i++) {
         unsigned char ch = str[i];
@@ -163,8 +164,16 @@ int answer_check(char *answer, char *cmp, size_t bytes_read) {
     return check;
 }
 
+int set_elm(int *fd, char *command, size_t buff_size) {
+    /*----------------------- Set some elm property, like AT S0 -------------------------------*/
+    char answer[buff_size];
+    size_t bytes_read = elm_talk(fd, answer, buff_size, command, 1);
+    int check = answer_check(answer, "OK", 2);
+    return check;
+}
+
 int16_t get_vehicle_speed(char *answer) {
-    /*---------- Converts last byte of answer; hex-->dec; speed range: 0...255 km\h  --------- */
+    /*---------- Converts last byte of answer; hex-->dec; speed range: 0...255 km\h  ----------*/
     char hexstring[2];
     size_t answer_size = strlen(answer)-1; // -1 to ignore a space
     if ( answer_size <= 1 ) {

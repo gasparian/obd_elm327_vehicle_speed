@@ -83,3 +83,8 @@ Here are some PIDs supported by tested car:
     '20': 'PIDs supported [21 - 40]',
 }
 ```  
+
+### To do:  
+ - turn off spaces in responses to make them shorted: `AT S0`;  
+ - turn on headers: `AT H1` --> `AT MA` --> look at all messages headers; 
+ - try to connect to CAN bus: turn on headers --> `AT SH 7DF` --> make couple requests and check the headers;  
