@@ -1,7 +1,9 @@
 ## ELM327 communication on Linux  
 
 The goal is to get a vehicle speed with high frequency, using a super-cheap elm327 controller and a standardized OBD API.  
-The speed is usually encoded with two-digit hexadecimal number and can vary in range 0...255 km\h.  
+The speed is usually encoded with two-digit hexadecimal number and can vary in range 0...255 km\h. 
+
+<p align="center"> <img src="https://github.com/gasparian/obd_elm327_vehicle_speed/img/speed_test_3.png" height=384 /> </p>
 
 Before begin:  
  - [obd communication cheatsheet](https://gist.github.com/gasparian/d8c24743e0e2527e2c1c3090a1bcf9df);  
@@ -58,7 +60,9 @@ tail -f /tmp/elm_log.csv
 ```  
 
 #### Skoda Octavia A5 2011 actual OBD PIDs  
-Here are PIDs supported by tested car:  
+Supported protocol: `ISO 14230-4 (KWP 5BAUD)`.  
+Default ECU - engine (id#10 in the headers).   
+Here are some PIDs supported by tested car:  
 ```
 {
     '03': 'Fuel system status',
@@ -77,15 +81,5 @@ Here are PIDs supported by tested car:
     '15': 'Oxygen Sensor 2 A: Voltage B: Short term fuel trim',
     '1C': 'OBD standards this vehicle conforms to',
     '20': 'PIDs supported [21 - 40]',
-    '33': 'Absolute Barometric Pressure'
 }
 ```  
-
-
-### To do:  
- - set the elm<-->ecu communication via `AT ST hh` != 32 (32 ~= 200 ms) and try 10Hz transmission - seems like no effect...;  
- - try to set maximum expected number of responses as a single hex digit after request: `01 0D 1` - 400ms --> 130ms!;   
- - turn on the headers `AT H1` and try to request speed, you should see the ECU id: (`83 F1 10 41 0D 00 D2`, `84 F1 10 41 0C 00 00 D2`), so it looks like the default ECU is engine (since `10` code);  
-  - check the protocol for the car: AT DP <- можно посмотреть, AT SP h <- найти протокол по номеру h (`AUTO, ISO 14230-4 (KWP 5BAUD)`, search: );  
-  - check the barometric pressure and temperature (32, **33**, 34): 34 works only - `Oxygen Sensor 1 AB: Fuel–Air Equivalence Ratio CD: Current`;  
-  - try to set engine ECU header `AT SH 86 10 F1` and change the priority byte (`86`) to a higher value;  

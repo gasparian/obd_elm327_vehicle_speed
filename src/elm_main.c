@@ -44,8 +44,8 @@ void main( int argc, char** argv ) {
     /*----------------------------------------------------------------*/
 
     /*----------------------- Talking to the device ------------------*/
-    char *answer = malloc(buff_size);
 
+    char *answer = malloc(buff_size);
     if ( debug_mode ) {
         // elm hard reset
         bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_HARD_RESET, 3);
