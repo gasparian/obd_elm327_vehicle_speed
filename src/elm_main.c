@@ -76,7 +76,7 @@ void main( int argc, char** argv ) {
             bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED, 0);
         }
         tsr = get_time();
-		dt = tsr - tsw;
+        dt = tsr - tsw;
 
         if ( debug_mode ) {
             if (bytes_read < 0) { 
