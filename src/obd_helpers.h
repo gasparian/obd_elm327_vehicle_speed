@@ -4,9 +4,10 @@
 #define SET_LINE_BRK "atl1\r"
 #define DEVICE_INFO "atws\r"
 #define DEVICE_HARD_RESET "atz\r"
-#define PID_SPEED "010D\r"
-// #define PID_SPEED "010D1\r"
-// #define PID_SPEED "010D01\r"
+// #define PID_SPEED "010D\r"
+#define PID_SPEED "010D1\r" /* add 1 on the end to the set maximum */
+                            /* expected number of responses        */
+                            /* and so reduce the answer time       */
 
 #include <time.h>
 #include <fcntl.h>   // File control definitions
