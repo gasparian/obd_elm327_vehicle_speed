@@ -100,6 +100,7 @@ int safe_copy_buffer(char *buffer, const char *str, size_t start, size_t end) {
             buffer[j++] = str[i];
         }
     }
+    buffer[j++] = '\0';
     return j;
 }
 
@@ -125,10 +126,31 @@ size_t elm_talk(int *fd, char *buff, size_t buff_size, char *command, int delay)
     bytes_read -= 3; // remove `>` prompt
     bytes_read = safe_copy_buffer(buff, answer, command_len, bytes_read);
 
-    // DEBUG
+    // // DEBUG
     // printf("\nInside elm read:\n %s\n %s \n", answer, buff);
 
     return bytes_read;
+}
+
+int answer_check(char *answer, char *cmp, size_t bytes_read) {
+    size_t check_size = strlen(cmp);
+    if ( bytes_read < check_size ) {
+        return -1;
+    }
+    char check_str[check_size];
+    slice_str(check_str, answer, 0, check_size);
+    int check = strcmp(check_str, cmp);
+
+    // // DEBUG
+    // printf("\nIn comparison function: %zu; %d\n Answer:\n '%s' \n '%s' (%zu)\n '%s' (%zu)\n", 
+    //        check_size, check, 
+    //        answer, check_str, strlen(check_str), cmp, strlen(cmp));
+
+    if (check != 0) {
+        fprintf(stderr, "Elm bad response!");
+        exit(1);
+    }
+    return check;
 }
 
 unsigned long get_time() {
@@ -148,22 +170,6 @@ unsigned long get_time() {
     return us;
 }
 
-int answer_check(char *answer, char *cmp, size_t bytes_read) {
-    size_t check_size = strlen(cmp);
-    if ( bytes_read < check_size ) {
-        return -1;
-    }
-    char check_str[check_size];
-    slice_str(check_str, answer, 0, check_size);
-    int check = strcmp(check_str, cmp);
-
-    // DEBUG
-    // printf("\nIn comparison function: %zu; %d\n %s (%zu)\n%s (%zu)\n", 
-    //        check_size, check, check_str, strlen(check_str), cmp, strlen(cmp));
-
-    return check;
-}
-
 int set_elm(int *fd, char *command, size_t buff_size) {
     /*----------------------- Set some elm property, like AT S0 -------------------------------*/
     char answer[buff_size];
@@ -175,7 +181,7 @@ int set_elm(int *fd, char *command, size_t buff_size) {
 int16_t get_vehicle_speed(char *answer) {
     /*---------- Converts last byte of answer; hex-->dec; speed range: 0...255 km\h  ----------*/
     char hexstring[2];
-    size_t answer_size = strlen(answer)-1; // -1 to ignore a space
+    size_t answer_size = strlen(answer); // -1 to ignore a space
     if ( answer_size <= 1 ) {
         return INT16_MIN;
     }

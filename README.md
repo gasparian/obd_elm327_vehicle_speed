@@ -56,7 +56,7 @@ sudo ./elm_main /dev/ttyUSB0 > /tmp/elm_speed.csv 2>&1
 ```  
 To monitor the logfile while dumping:  
 ```
-tail -f /tmp/elm_log.csv
+tail -f /tmp/elm_speed.csv
 ```  
 
 #### Skoda Octavia A5 2011 actual OBD PIDs  
@@ -84,7 +84,4 @@ Here are some PIDs supported by tested car:
 }
 ```  
 
-### To do:  
- - turn off spaces in responses to make them shorted: `AT S0`;  
- - turn on headers: `AT H1` --> `AT MA` --> look at all messages headers; 
- - try to connect to CAN bus: turn on headers --> `AT SH 7DF` --> make couple requests and check the headers;  
+ 

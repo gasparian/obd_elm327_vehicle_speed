@@ -44,21 +44,18 @@ void main( int argc, char** argv ) {
     /*----------------------------------------------------------------*/
 
     /*----------------------- Talking to the device ------------------*/
+    set_elm(&fd, "ATS0\r", buff_size); // turn off spaces in response messages
 
     char *answer = malloc(buff_size);
     if ( debug_mode ) {
         // elm hard reset
         bytes_read = elm_talk(&fd, answer, buff_size, DEVICE_HARD_RESET, 3);
-        check = answer_check(answer, "ELM327", 6);
+        answer_check(answer, "ELM327", 6);
     } else {   
         bytes_read = elm_talk(&fd, answer, buff_size, PID_SPEED, 2);
-        check = answer_check(answer, "41 0D", 5);
+        answer_check(answer, "410D", 4);
     }
-    if (check != 0) {
-        fprintf(stderr, "Elm bad response!\n");
-        close(fd); // Close serial port
-        exit(1);
-    }
+
     printf("\nReady to talk!\n");
     /*----------------------------------------------------------------*/
 
@@ -85,7 +82,7 @@ void main( int argc, char** argv ) {
             }
             printf(msg, iter-1, tsw, tsr, dt, bytes_read, answer);
         } else {
-            int check = answer_check(answer, "41 0D", 5);
+            int check = answer_check(answer, "410D", 4);
             if ( (bytes_read < 0) || (check != 0) ) {
                 fprintf(stderr, msg, iter-1, tsw, tsr, dt, bytes_read, "");
                 continue;
