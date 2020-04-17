@@ -181,7 +181,7 @@ int set_elm(int *fd, char *command, size_t buff_size) {
 int16_t get_vehicle_speed(char *answer) {
     /*---------- Converts last byte of answer; hex-->dec; speed range: 0...255 km\h  ----------*/
     char hexstring[2];
-    size_t answer_size = strlen(answer); // -1 to ignore a space
+    size_t answer_size = strlen(answer);
     if ( answer_size <= 1 ) {
         return INT16_MIN;
     }
