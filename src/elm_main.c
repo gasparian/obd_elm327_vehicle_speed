@@ -1,3 +1,4 @@
+#include "obd_pids.h"
 #include "obd_helpers.h"
 
 void main( int argc, char** argv ) {
@@ -44,7 +45,7 @@ void main( int argc, char** argv ) {
     /*----------------------------------------------------------------*/
 
     /*----------------------- Talking to the device ------------------*/
-    set_elm(&fd, "ATS0\r", buff_size); // turn off spaces in response messages
+    set_elm(&fd, SET_NO_SPACES, buff_size); // turn off spaces in response messages
 
     char *answer = malloc(buff_size);
     if ( debug_mode ) {
