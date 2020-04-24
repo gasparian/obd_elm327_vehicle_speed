@@ -1,7 +1,8 @@
 ## ELM327 communication on Linux  
 
 The goal is to get a vehicle speed with high frequency (5-10 Hz), using a super-cheap elm327 controller and a standardized OBD API.  
-The speed is usually encoded with two-digit hexadecimal number and can vary in range 0...255 km\h. 
+The speed is usually encoded with two-digit hexadecimal number and can vary in range 0...255 km\h.  
+In my case, the vehicle speed needed to increase the filter's performance in localization.  
 
 <p align="center"> <img src="https://github.com/gasparian/obd_elm327_vehicle_speed/blob/master/img/speed_test_3.png" height=300 /> <img src="https://github.com/gasparian/obd_elm327_vehicle_speed/blob/master/img/dt_distr_10Hz.png" height=300 /> </p>
 
